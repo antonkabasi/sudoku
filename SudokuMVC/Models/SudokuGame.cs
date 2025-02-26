@@ -3,7 +3,9 @@ namespace YourProjectNamespace.Models
     public class SudokuGame
     {
         public int[,] Board { get; set; }
-        public string Difficulty { get; set; }
+
+        
+        public required string Difficulty { get; set; }
         public DateTime StartTime { get; set; }
 
         public SudokuGame()

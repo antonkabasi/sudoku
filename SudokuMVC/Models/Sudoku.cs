@@ -7,6 +7,7 @@ namespace YourProjectNamespace.Models
     public class Sudoku : Generator
     {
         [JsonInclude]
+        
         public byte[][] UserGrid { get; set; }
         
         [JsonInclude]
