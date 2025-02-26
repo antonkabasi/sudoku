@@ -13,19 +13,27 @@ I am rewriting it using ASP.NET Core, Entity Framework Core, and adding CRUD fun
 
 - **Stopwatch Integration:** Tracks the game time for each puzzle.
 - **Top‑10 Leaderboard:** Automatically determines if your time qualifies as a new top‑10 score for the chosen difficulty and prompts you to submit your score.
-- **CRUD Functionality:** Manage leaderboard entries (create, read, update, and delete).
-- **Responsive UI:** Built using ASP.NET Core MVC, Razor Views, and Bootstrap 5.
-- **Persistent Database:** Uses SQLite by default, with an option to switch to a hosted PostgreSQL (e.g., Supabase) if desired.
+- **CRUD Functionality:** Manage leaderboard entries (create, read, update, and delete). 
+                        
+                        But you have to unlock it by finishing a game first! :)
+                        (or remove the comment on the solve button in the Views/Home/index.cshtml line 130)
+
+- **Responsive UI:** Built using ASP.NET Core MVC, Razor Views, and Bootstrap 5. 
+- **Persistent Database:** SQlite, for testing purposes.
 
 ## Tech Stack
 
 - **Backend:** ASP.NET Core MVC, Entity Framework Core
 - **Frontend:** Razor Views, Bootstrap 5
 - **Database:** SQLite
-- **Containerization**
+- **Containerization:** Docker
 
 ## TODO
+-- **Minor frontend modifications**
+
+## Might Do
 - **Authentication**
+- **Deploy**
 
 ## Installation & Running
 
@@ -74,3 +82,8 @@ I am rewriting it using ASP.NET Core, Entity Framework Core, and adding CRUD fun
       docker run -d -p 5000:5000 --name sudoku-container sudoku-app
 
       3. Open the app in your web browser at: http://localhost:5000/
+
+
+Copyright (c) 2025 Anton Kabaši
+
+This project is licensed under the MIT License. See the LICENSE file for details.
