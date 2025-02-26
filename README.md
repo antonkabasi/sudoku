@@ -2,9 +2,12 @@
 
 ## Overview
 
-This repository contains a web-based **Sudoku** application. Originally developed in C# using Windows Forms (in Croatian) for an Object‑Oriented Programming course at the Faculty of Science, University of Split in 2015, this project has been completely re‑implemented as an **ASP.NET Core MVC** application.
+This repository contains a web-based **Sudoku** application. Originally developed in C# using Windows Forms 
+(in Croatian) for an Object‑Oriented Programming course at the Faculty of Science, University of Split in 2015, 
+this project has been completely re‑implemented as an **ASP.NET Core MVC** application.
 
-The original version used to work on my PC, but now it doesn't so with C# being open-source and cross-platform, I am rewriting it using ASP.NET Core, Entity Framework Core, and adding CRUD functionality.
+The original version used to work on my PC, but now it doesn't so with C# being open-source and cross-platform, 
+I am rewriting it using ASP.NET Core, Entity Framework Core, and adding CRUD functionality.
 
 ## New Features
 
@@ -41,7 +44,9 @@ The original version used to work on my PC, but now it doesn't so with C# being 
 
       3. **Apply Migrations**
 
-      The project uses Entity Framework Core with a SQLite database for testing, database isn't included in the github project.
+      The project uses Entity Framework Core with a SQLite database for testing, 
+      database isn't included in the github project.
+      
       Run the following command to create the database:
 
          dotnet ef database update
