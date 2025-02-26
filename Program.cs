@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 var builder = WebApplication.CreateBuilder(args);
-
+builder.WebHost.UseUrls("http://+:5000");
 builder.Services.AddControllersWithViews();
 
 // configure EF Core with SQLite.
@@ -35,6 +35,14 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider.GetRequiredService<LeaderboardDbContext>();
+    // Automatically apply any pending migrations
+    context.Database.Migrate();
+}
 
 /*
 // clear out database

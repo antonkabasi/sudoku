@@ -19,31 +19,53 @@ The original version used to work on my PC, but now it doesn't so with C# being 
 - **Backend:** ASP.NET Core MVC, Entity Framework Core
 - **Frontend:** Razor Views, Bootstrap 5
 - **Database:** SQLite
-- **Authentication:** None
+- **Containerization**
+
+## TODO
+- **Authentication**
 
 ## Installation & Running
 
-1. **Clone the repository:**
+   **Option 1: Local installation**
 
-   git clone https://github.com/antonkabasi/sudoku.git
-   cd sudoku
+      1. **Clone the repository:**
 
-2. **Restore dependencies:**
+         git clone https://github.com/antonkabasi/sudoku.git
 
-   dotnet restore
+         cd sudoku
 
-3. **Apply Migrations**
+      2. **Restore dependencies:**
+      Assuming you have latest .NET Core version installed 
 
-The project uses Entity Framework Core with a SQLite database for testing, database isn't included in the github project.
-Run the following command to create (or update) the database schema:
+         dotnet restore
 
-   dotnet ef database update
+      3. **Apply Migrations**
 
-4. **Build and Run the Application:**
+      The project uses Entity Framework Core with a SQLite database for testing, database isn't included in the github project.
+      Run the following command to create the database:
 
-   dotnet run
+         dotnet ef database update
 
-5. **Open in your Browser:**
+      4. **Build and Run the Application:**
 
-Navigate to the URL shown in the console (typically http://localhost:5000).
+         dotnet run
 
+      5. **Open in your Browser:**
+
+      Navigate to the URL shown in the console (typically http://localhost:5000).
+
+   **Option 2: Running in Docker**
+
+   This project includes a Dockerfile for building and running the ASP.NET Core MVC application in a container. The Docker image is configured to listen on port 5000.
+
+      1. **Build the Docker Image:**
+
+      From the project root, run:
+
+      docker build --no-cache -t sudoku-app .
+
+      2. **Run the docker container:**
+
+      docker run -d -p 5000:5000 --name sudoku-container sudoku-app
+
+      3. Open the app in your web browser at: http://localhost:5000/
