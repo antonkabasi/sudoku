@@ -15,8 +15,8 @@ I am rewriting it using ASP.NET Core, Entity Framework Core, and adding CRUD fun
 - **Top‑10 Leaderboard:** Automatically determines if your time qualifies as a new top‑10 score for the chosen difficulty and prompts you to submit your score.
 - **CRUD Functionality:** Manage leaderboard entries (create, read, update, and delete). 
                         
-                        But you have to unlock it by finishing a game first! :)
-                        (or remove the comment on the solve button in the Views/Home/index.cshtml line 130)
+            But you have to unlock it by finishing a game first! :)
+            (or remove the comment on the solve button in the Views/Home/index.cshtml line 130)
 
 - **Responsive UI:** Built using ASP.NET Core MVC, Razor Views, and Bootstrap 5. 
 - **Persistent Database:** SQlite, for testing purposes.
