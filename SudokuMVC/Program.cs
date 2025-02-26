@@ -1,6 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using YourProjectNamespace.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -33,7 +36,61 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider.GetRequiredService<LeaderboardDbContext>();
+    context.Database.Migrate();
+    
+    // For testing: remove existing entries to force seeding.
+    var existing = context.LeaderboardEntries.ToList();
+    if (existing.Any())
+    {
+        context.LeaderboardEntries.RemoveRange(existing);
+        context.SaveChanges();
+    }
+    
+    // Seed the database with 10 entries per difficulty.
+    var entries = new List<LeaderboardEntry>();
 
+    // Each seeded entry will have a StopwatchValue of 1 second.
+    // Seed 10 entries for Easy difficulty.
+    for (int i = 1; i <= 10; i++)
+    {
+        entries.Add(new LeaderboardEntry
+        {
+            PlayerName = "Test",
+            Difficulty = "Easy",
+            StopwatchValue = 2,
+            DateAchieved = DateTime.Now.AddDays(-i)
+        });
+    }
 
+    // Seed 10 entries for Medium difficulty.
+    for (int i = 1; i <= 10; i++)
+    {
+        entries.Add(new LeaderboardEntry
+        {
+            PlayerName = "Test",
+            Difficulty = "Medium",
+            StopwatchValue = 2,
+            DateAchieved = DateTime.Now.AddDays(-i)
+        });
+    }
+
+    // Seed 10 entries for Hard difficulty.
+    for (int i = 1; i <= 10; i++)
+    {
+        entries.Add(new LeaderboardEntry
+        {
+            PlayerName = "Test",
+            Difficulty = "Hard",
+            StopwatchValue = 3,
+            DateAchieved = DateTime.Now.AddDays(-i)
+        });
+    }
+
+    context.LeaderboardEntries.AddRange(entries);
+    context.SaveChanges();
+}
 
 app.Run();

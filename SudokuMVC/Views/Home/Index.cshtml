@@ -1,6 +1,8 @@
 ﻿@model YourProjectNamespace.Models.Sudoku
 @{
     ViewData["Title"] = "Sudoku Game";
+    // Determine maximum number of rows among the three lists for the leaderboard.
+    // (This is used only in the leaderboard component, not here.)
 }
 <!DOCTYPE html>
 <html>
@@ -17,7 +19,7 @@
         }
         #messageContainer .alert {
             margin: 0;
-            line-height: 50px; /* vertically center text */
+            line-height: 50px;
             font-size: 1.1em;
         }
         #autoMessage {
@@ -26,7 +28,6 @@
             overflow: hidden;
             font-weight: bold;
         }
-        /* Soothing light green highlight for selected row/column/block */
         .highlight, .highlight input {
             background-color: #c8e6c9 !important;
         }
@@ -100,7 +101,27 @@
         </div>
         <!-- Leaderboard Column (4/12 width) -->
         <div class="col-md-4">
-            @await Component.InvokeAsync("Leaderboard", new { difficulty = "Medium" })
+            @* If the puzzle qualifies as a new top 10 score, show the submission form above the leaderboard *@
+            @if(ViewBag.QualifiedForLeaderboard != null && (bool)ViewBag.QualifiedForLeaderboard == true)
+            {
+                <div class="card mb-3">
+                    <div class="card-header">
+                        New Top 10! Submit Your Score
+                    </div>
+                    <div class="card-body">
+                        <form asp-action="SubmitScore" method="post">
+                            <div class="form-group">
+                                <label>Player Name</label>
+                                <input type="text" name="PlayerName" class="form-control" placeholder="Enter your name" required />
+                            </div>
+                            <input type="hidden" name="Difficulty" value="@ViewBag.Difficulty" />
+                            <input type="hidden" name="StopwatchValue" value="@ViewBag.ElapsedTime" />
+                            <button type="submit" class="btn btn-primary">Submit Score</button>
+                        </form>
+                    </div>
+                </div>
+            }
+            @await Component.InvokeAsync("Leaderboard")
         </div>
     </div>
 </div>

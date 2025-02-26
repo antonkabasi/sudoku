@@ -32,6 +32,10 @@ build_property.EnableCodeStyleSeverity =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvSG9tZS9JbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
+[/home/anton/sudoku/sudoku/SudokuMVC/Views/Home/SubmitScore.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvSG9tZS9TdWJtaXRTY29yZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
 [/home/anton/sudoku/sudoku/SudokuMVC/Views/Leaderboard/Create.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvTGVhZGVyYm9hcmQvQ3JlYXRlLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 

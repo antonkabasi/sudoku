@@ -40,7 +40,7 @@ namespace YourProjectNamespace.Controllers
                 }
             }
 
-            // Create a new puzzle using our English classes.
+            // Create a new puzzle.
             var puzzle = new Sudoku(chosenDifficulty);
 
             // Always reset the puzzle and game start time.
@@ -63,6 +63,7 @@ namespace YourProjectNamespace.Controllers
             }
             var puzzle = JsonSerializer.Deserialize<Sudoku>(puzzleJson);
 
+            // Update puzzle's user grid from posted form values.
             for (byte i = 0; i < 9; i++)
             {
                 for (byte j = 0; j < 9; j++)
@@ -81,22 +82,24 @@ namespace YourProjectNamespace.Controllers
             }
 
             string status = puzzle.CheckStatus();
-            // If the game isn't complete or is incorrect, clear any StopTime and restart the timer.
+
             if (status == "GameNotOver")
             {
                 ViewBag.Message = "The game isn't over yet.";
                 HttpContext.Session.Remove("StopTime");
                 HttpContext.Session.SetString("GameStartTime", DateTime.UtcNow.ToString("o"));
+                ViewBag.QualifiedForLeaderboard = false;
             }
             else if (status == "SomeIncorrect")
             {
                 ViewBag.Message = "Some entries are incorrect.";
                 HttpContext.Session.Remove("StopTime");
                 HttpContext.Session.SetString("GameStartTime", DateTime.UtcNow.ToString("o"));
+                ViewBag.QualifiedForLeaderboard = false;
             }
             else // "Correct"
             {
-                // Record stop time so that the timer stops.
+                // Record stop time.
                 HttpContext.Session.SetString("StopTime", DateTime.UtcNow.ToString("o"));
 
                 // Compute elapsed time.
@@ -111,15 +114,7 @@ namespace YourProjectNamespace.Controllers
                                         .Where(e => e.Difficulty.ToLower() == puzzle.Difficulty.ToLower())
                                         .OrderBy(e => e.StopwatchValue)
                                         .ToListAsync();
-                bool qualifies = false;
-                if (entries.Count < 10)
-                {
-                    qualifies = true;
-                }
-                else if (elapsed < entries.Last().StopwatchValue)
-                {
-                    qualifies = true;
-                }
+                bool qualifies = (entries.Count < 10) || (elapsed < entries.Last().StopwatchValue);
 
                 if (qualifies)
                 {
@@ -132,6 +127,7 @@ namespace YourProjectNamespace.Controllers
                 else
                 {
                     ViewBag.Message = "Congratulations! You solved the puzzle.";
+                    ViewBag.QualifiedForLeaderboard = false;
                 }
             }
 
@@ -167,7 +163,7 @@ namespace YourProjectNamespace.Controllers
         {
             if (TempData["Top10Qualified"]?.ToString() == "true")
             {
-                // Pre-fill a LeaderboardEntry model with the elapsed time and difficulty.
+                // Pre-fill a LeaderboardEntry with elapsed time and difficulty.
                 var entry = new LeaderboardEntry
                 {
                     Difficulty = TempData["Difficulty"]?.ToString(),

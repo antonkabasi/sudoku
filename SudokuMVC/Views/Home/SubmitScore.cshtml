@@ -1,0 +1,26 @@
+@model YourProjectNamespace.Models.LeaderboardEntry
+@{
+    ViewData["Title"] = "Submit Your Score";
+}
+<h2 class="text-center">Submit Your Score</h2>
+
+<form asp-action="SubmitScore" method="post" class="mx-auto" style="max-width:400px;">
+    <div class="form-group">
+        <label asp-for="PlayerName"></label>
+        <input asp-for="PlayerName" class="form-control" placeholder="Enter your name" />
+        <span asp-validation-for="PlayerName" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Difficulty"></label>
+        <input asp-for="Difficulty" class="form-control" readonly />
+    </div>
+    <div class="form-group">
+        <label asp-for="StopwatchValue"></label>
+        <input asp-for="StopwatchValue" class="form-control" readonly />
+    </div>
+    <button type="submit" class="btn btn-primary btn-block">Submit Score</button>
+</form>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
