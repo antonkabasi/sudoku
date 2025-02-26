@@ -1,0 +1,63 @@
+@model YourProjectNamespace.Models.LeaderboardViewModel
+@{
+    // Determine maximum number of rows among the three lists.
+    int maxRows = Math.Max(Model.EasyEntries.Count(), Math.Max(Model.MediumEntries.Count(), Model.HardEntries.Count()));
+}
+<style>
+    .leaderboard-table {
+        width: 720px; /* 240px per column * 3 columns */
+        table-layout: fixed;
+    }
+    .leaderboard-col {
+        width: 240px; /* Adjust width as needed */
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        vertical-align: middle;
+        padding: 0.5rem;
+    }
+</style>
+<div class="card">
+    <div class="card-header">
+        Leaderboard
+    </div>
+    <div class="card-body">
+        <table class="table table-striped table-sm leaderboard-table">
+            <thead>
+                <tr>
+                    <th class="leaderboard-col">Easy</th>
+                    <th class="leaderboard-col">Medium</th>
+                    <th class="leaderboard-col">Hard</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (int i = 0; i < maxRows; i++)
+                {
+                    <tr>
+                        <td class="leaderboard-col">
+                            @if (i < Model.EasyEntries.Count())
+                            {
+                                var entry = Model.EasyEntries.ElementAt(i);
+                                <div>@entry.PlayerName - @entry.StopwatchValue s</div>
+                            }
+                        </td>
+                        <td class="leaderboard-col">
+                            @if (i < Model.MediumEntries.Count())
+                            {
+                                var entry = Model.MediumEntries.ElementAt(i);
+                                <div>@entry.PlayerName - @entry.StopwatchValue s</div>
+                            }
+                        </td>
+                        <td class="leaderboard-col">
+                            @if (i < Model.HardEntries.Count())
+                            {
+                                var entry = Model.HardEntries.ElementAt(i);
+                                <div>@entry.PlayerName - @entry.StopwatchValue s</div>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

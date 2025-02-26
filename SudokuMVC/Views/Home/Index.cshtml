@@ -17,10 +17,9 @@
         }
         #messageContainer .alert {
             margin: 0;
-            line-height: 50px; /* vertically center the text */
+            line-height: 50px; /* vertically center text */
             font-size: 1.1em;
         }
-        /* Auto-check message container */
         #autoMessage {
             height: 30px;
             margin-bottom: 10px;
@@ -60,42 +59,50 @@
     <!-- Auto-check Message Container -->
     <div id="autoMessage" class="text-center"></div>
     
-    <!-- Stopwatch Display -->
-    <div class="text-center mb-4">
-        <strong>Time:</strong> <span id="stopwatch">00:00</span>
-    </div>
-    
-    <!-- Sudoku Board Form -->
-    <form method="post" action="@Url.Action("Check", "Home")" id="sudokuForm">
-        <table class="mx-auto">
-            @for (int i = 0; i < 9; i++)
-            {
-                <tr>
-                    @for (int j = 0; j < 9; j++)
+    <div class="row">
+        <!-- Puzzle Column (8/12 width) -->
+        <div class="col-md-8">
+            <!-- Stopwatch Display -->
+            <div class="text-center mb-4">
+                <strong>Time:</strong> <span id="stopwatch">00:00</span>
+            </div>
+            <!-- Sudoku Board Form -->
+            <form method="post" action="@Url.Action("Check", "Home")" id="sudokuForm">
+                <table class="mx-auto">
+                    @for (int i = 0; i < 9; i++)
                     {
-                        var borderTop = (i % 3 == 0) ? "3px solid black" : "1px solid black";
-                        var borderLeft = (j % 3 == 0) ? "3px solid black" : "1px solid black";
-                        var borderRight = (j == 8) ? "3px solid black" : "1px solid black";
-                        var borderBottom = (i == 8) ? "3px solid black" : "1px solid black";
-                    <td data-row="@i" data-col="@j" style="width:50px; height:50px; border-top:@borderTop; border-left:@borderLeft; border-right:@borderRight; border-bottom:@borderBottom; padding:0;">
-                        @{
-                            byte givenValue = Model.Given[i][j];
-                            byte userValue = Model.UserGrid[i][j];
-                            bool isGiven = givenValue != 0;
-                            string cellValue = isGiven ? givenValue.ToString() : (userValue != 0 ? userValue.ToString() : "");
-                        }
-                        <input name="@($"cell_{i}_{j}")" type="text" class="form-control text-center p-0 sudoku-cell" maxlength="1" 
-                               value="@cellValue" style="height: 100%; border: none;" @(isGiven ? "readonly" : "") />
-                    </td>
+                        <tr>
+                            @for (int j = 0; j < 9; j++)
+                            {
+                                var borderTop = (i % 3 == 0) ? "3px solid black" : "1px solid black";
+                                var borderLeft = (j % 3 == 0) ? "3px solid black" : "1px solid black";
+                                var borderRight = (j == 8) ? "3px solid black" : "1px solid black";
+                                var borderBottom = (i == 8) ? "3px solid black" : "1px solid black";
+                            <td data-row="@i" data-col="@j" style="width:50px; height:50px; border-top:@borderTop; border-left:@borderLeft; border-right:@borderRight; border-bottom:@borderBottom; padding:0;">
+                                @{
+                                    byte givenValue = Model.Given[i][j];
+                                    byte userValue = Model.UserGrid[i][j];
+                                    bool isGiven = givenValue != 0;
+                                    string cellValue = isGiven ? givenValue.ToString() : (userValue != 0 ? userValue.ToString() : "");
+                                }
+                                <input name="@($"cell_{i}_{j}")" type="text" class="form-control text-center p-0 sudoku-cell" maxlength="1" 
+                                       value="@cellValue" style="height: 100%; border: none;" @(isGiven ? "readonly" : "") />
+                            </td>
+                            }
+                        </tr>
                     }
-                </tr>
-            }
-        </table>
-        <div class="text-center mt-3">
-            <button type="submit" class="btn btn-success">Check</button>
-            <button type="submit" formaction="@Url.Action("Solve", "Home")" class="btn btn-danger ml-2">Solve</button>
+                </table>
+                <div class="text-center mt-3">
+                    <button type="submit" class="btn btn-success">Check</button>
+                    <button type="submit" formaction="@Url.Action("Solve", "Home")" class="btn btn-danger ml-2">Solve</button>
+                </div>
+            </form>
         </div>
-    </form>
+        <!-- Leaderboard Column (4/12 width) -->
+        <div class="col-md-4">
+            @await Component.InvokeAsync("Leaderboard", new { difficulty = "Medium" })
+        </div>
+    </div>
 </div>
 
 <!-- JavaScript for highlighting, auto-check, and stopwatch polling -->

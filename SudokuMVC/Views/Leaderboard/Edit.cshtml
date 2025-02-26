@@ -1,0 +1,29 @@
+@model YourProjectNamespace.Models.LeaderboardEntry
+@{
+    ViewData["Title"] = "Edit Leaderboard Entry";
+}
+<h1>Edit Leaderboard Entry</h1>
+<form asp-action="Edit">
+    <div class="form-group">
+        <label asp-for="PlayerName"></label>
+        <input asp-for="PlayerName" class="form-control" />
+        <span asp-validation-for="PlayerName" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Difficulty"></label>
+        <select asp-for="Difficulty" class="form-control">
+            <option value="Easy">Easy</option>
+            <option value="Medium">Medium</option>
+            <option value="Hard">Hard</option>
+        </select>
+        <span asp-validation-for="Difficulty" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="StopwatchValue"></label>
+        <input asp-for="StopwatchValue" class="form-control" />
+        <span asp-validation-for="StopwatchValue" class="text-danger"></span>
+    </div>
+    <input type="hidden" asp-for="Id" />
+    <button type="submit" class="btn btn-primary">Save</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>

@@ -1,0 +1,40 @@
+@model YourProjectNamespace.Models.LeaderboardEntry
+@{
+    ViewData["Title"] = "Delete Leaderboard Entry";
+}
+<h1>Delete Leaderboard Entry</h1>
+<h3>Are you sure you want to delete this entry?</h3>
+<div>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.PlayerName)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.PlayerName)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Difficulty)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Difficulty)
+        </dd>
+        <dt class="col-sm-2">
+            Time (s)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.StopwatchValue)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.DateAchieved)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.DateAchieved)
+        </dd>
+    </dl>
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="Id" />
+        <button type="submit" class="btn btn-danger">Delete</button>
+        <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>

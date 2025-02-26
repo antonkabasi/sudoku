@@ -4,11 +4,22 @@ using System;
 using System.Collections.Generic;
 using System.Text.Json;
 using System.Globalization;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace YourProjectNamespace.Controllers
 {
     public class HomeController : Controller
     {
+        private readonly LeaderboardDbContext _leaderboardContext;
+
+        // Inject LeaderboardDbContext so we can check and save leaderboard entries.
+        public HomeController(LeaderboardDbContext leaderboardContext)
+        {
+            _leaderboardContext = leaderboardContext;
+        }
+
         // GET: /Home/Index?difficulty=easy (or medium/hard)
         public IActionResult Index(string difficulty)
         {
@@ -43,9 +54,8 @@ namespace YourProjectNamespace.Controllers
 
         // POST: /Home/Check
         [HttpPost]
-        public IActionResult Check()
+        public async Task<IActionResult> Check()
         {
-            // Retrieve the puzzle from session.
             string puzzleJson = HttpContext.Session.GetString("SudokuPuzzle");
             if (string.IsNullOrEmpty(puzzleJson))
             {
@@ -53,7 +63,6 @@ namespace YourProjectNamespace.Controllers
             }
             var puzzle = JsonSerializer.Deserialize<Sudoku>(puzzleJson);
 
-            // Update the puzzle's user grid from the posted form values.
             for (byte i = 0; i < 9; i++)
             {
                 for (byte j = 0; j < 9; j++)
@@ -71,28 +80,62 @@ namespace YourProjectNamespace.Controllers
                 }
             }
 
-            // Check the puzzle status.
             string status = puzzle.CheckStatus();
+            // If the game isn't complete or is incorrect, clear any StopTime and restart the timer.
             if (status == "GameNotOver")
             {
                 ViewBag.Message = "The game isn't over yet.";
                 HttpContext.Session.Remove("StopTime");
+                HttpContext.Session.SetString("GameStartTime", DateTime.UtcNow.ToString("o"));
             }
             else if (status == "SomeIncorrect")
             {
                 ViewBag.Message = "Some entries are incorrect.";
                 HttpContext.Session.Remove("StopTime");
+                HttpContext.Session.SetString("GameStartTime", DateTime.UtcNow.ToString("o"));
             }
             else // "Correct"
             {
-                ViewBag.Message = "Congratulations! You solved the puzzle.";
-                // Record stop time so the timer stops.
+                // Record stop time so that the timer stops.
                 HttpContext.Session.SetString("StopTime", DateTime.UtcNow.ToString("o"));
+
+                // Compute elapsed time.
+                string startTimeStr = HttpContext.Session.GetString("GameStartTime");
+                string stopTimeStr = HttpContext.Session.GetString("StopTime");
+                DateTime startTime = DateTime.Parse(startTimeStr, null, DateTimeStyles.RoundtripKind);
+                DateTime stopTime = DateTime.Parse(stopTimeStr, null, DateTimeStyles.RoundtripKind);
+                int elapsed = (int)(stopTime - startTime).TotalSeconds;
+
+                // Check if this elapsed time qualifies for top 10 for this difficulty.
+                var entries = await _leaderboardContext.LeaderboardEntries
+                                        .Where(e => e.Difficulty.ToLower() == puzzle.Difficulty.ToLower())
+                                        .OrderBy(e => e.StopwatchValue)
+                                        .ToListAsync();
+                bool qualifies = false;
+                if (entries.Count < 10)
+                {
+                    qualifies = true;
+                }
+                else if (elapsed < entries.Last().StopwatchValue)
+                {
+                    qualifies = true;
+                }
+
+                if (qualifies)
+                {
+                    // Pass elapsed time and difficulty via TempData.
+                    TempData["Top10Qualified"] = "true";
+                    TempData["ElapsedTime"] = elapsed.ToString();
+                    TempData["Difficulty"] = puzzle.Difficulty;
+                    return RedirectToAction("SubmitScore");
+                }
+                else
+                {
+                    ViewBag.Message = "Congratulations! You solved the puzzle.";
+                }
             }
 
-            // Update session with the latest puzzle state.
             HttpContext.Session.SetString("SudokuPuzzle", JsonSerializer.Serialize(puzzle));
-
             return View("Index", puzzle);
         }
 
@@ -100,15 +143,12 @@ namespace YourProjectNamespace.Controllers
         [HttpPost]
         public IActionResult Solve()
         {
-            // Retrieve the puzzle from session.
             string puzzleJson = HttpContext.Session.GetString("SudokuPuzzle");
             if (string.IsNullOrEmpty(puzzleJson))
             {
                 return RedirectToAction("Index");
             }
             var puzzle = JsonSerializer.Deserialize<Sudoku>(puzzleJson);
-
-            // Replace the user grid with the solved puzzle.
             for (byte i = 0; i < 9; i++)
             {
                 for (byte j = 0; j < 9; j++)
@@ -116,20 +156,46 @@ namespace YourProjectNamespace.Controllers
                     puzzle.UserGrid[i][j] = puzzle.Solved[i][j];
                 }
             }
-
             ViewBag.Message = "The puzzle has been solved.";
-            // Record stop time.
             HttpContext.Session.SetString("StopTime", DateTime.UtcNow.ToString("o"));
-
-            // Update session with the solved puzzle.
             HttpContext.Session.SetString("SudokuPuzzle", JsonSerializer.Serialize(puzzle));
-
             return View("Index", puzzle);
+        }
+
+        // GET: /Home/SubmitScore
+        public IActionResult SubmitScore()
+        {
+            if (TempData["Top10Qualified"]?.ToString() == "true")
+            {
+                // Pre-fill a LeaderboardEntry model with the elapsed time and difficulty.
+                var entry = new LeaderboardEntry
+                {
+                    Difficulty = TempData["Difficulty"]?.ToString(),
+                    StopwatchValue = int.Parse(TempData["ElapsedTime"]?.ToString() ?? "0")
+                };
+                return View(entry);
+            }
+            return RedirectToAction("Index");
+        }
+
+        // POST: /Home/SubmitScore
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> SubmitScore(LeaderboardEntry entry)
+        {
+            if (ModelState.IsValid)
+            {
+                entry.DateAchieved = DateTime.Now;
+                _leaderboardContext.LeaderboardEntries.Add(entry);
+                await _leaderboardContext.SaveChangesAsync();
+                return RedirectToAction("Index", "Leaderboard");
+            }
+            return View(entry);
         }
 
         // POST: /Home/Validate
         [HttpPost]
-        public IActionResult Validate([FromBody] Dictionary<string, string> cellValues)
+        public async Task<IActionResult> Validate([FromBody] Dictionary<string, string> cellValues)
         {
             string puzzleJson = HttpContext.Session.GetString("SudokuPuzzle");
             if (string.IsNullOrEmpty(puzzleJson))
@@ -138,7 +204,6 @@ namespace YourProjectNamespace.Controllers
             }
             var puzzle = JsonSerializer.Deserialize<Sudoku>(puzzleJson);
 
-            // Update the puzzle's user grid from the provided values.
             for (byte i = 0; i < 9; i++)
             {
                 for (byte j = 0; j < 9; j++)
@@ -160,15 +225,18 @@ namespace YourProjectNamespace.Controllers
             if (status == "GameNotOver")
             {
                 message = "The game isn't over yet.";
+                HttpContext.Session.Remove("StopTime");
+                HttpContext.Session.SetString("GameStartTime", DateTime.UtcNow.ToString("o"));
             }
             else if (status == "SomeIncorrect")
             {
                 message = "Some entries are incorrect.";
+                HttpContext.Session.Remove("StopTime");
+                HttpContext.Session.SetString("GameStartTime", DateTime.UtcNow.ToString("o"));
             }
             else // "Correct"
             {
                 message = "Congratulations! You solved the puzzle.";
-                // Record stop time.
                 HttpContext.Session.SetString("StopTime", DateTime.UtcNow.ToString("o"));
             }
 
@@ -183,7 +251,6 @@ namespace YourProjectNamespace.Controllers
             if (!string.IsNullOrEmpty(startTimeStr) &&
                 DateTime.TryParse(startTimeStr, null, DateTimeStyles.RoundtripKind, out DateTime startTime))
             {
-                // If a stop time exists, use it instead of the current time.
                 string stopTimeStr = HttpContext.Session.GetString("StopTime");
                 DateTime effectiveTime;
                 if (!string.IsNullOrEmpty(stopTimeStr) &&
