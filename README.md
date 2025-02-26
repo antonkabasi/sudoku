@@ -67,7 +67,7 @@ I am rewriting it using ASP.NET Core, Entity Framework Core, and adding CRUD fun
 
       Navigate to the URL shown in the console (typically http://localhost:5000).
 
-   **Option 2: Running in Docker**
+   **Option 2: Running in Docker - suggested option!**
 
    This project includes a Dockerfile for building and running the ASP.NET Core MVC application in a container. The Docker image is configured to listen on port 5000.
 
