@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/home/anton/sudoku/sudoku/SudokuWeb/SudokuWeb.csproj": {}
+    "/home/anton/sudoku/sudoku/SudokuMVC/SudokuMVC.csproj": {}
   },
   "projects": {
-    "/home/anton/sudoku/sudoku/SudokuWeb/SudokuWeb.csproj": {
+    "/home/anton/sudoku/sudoku/SudokuMVC/SudokuMVC.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/anton/sudoku/sudoku/SudokuWeb/SudokuWeb.csproj",
-        "projectName": "SudokuWeb",
-        "projectPath": "/home/anton/sudoku/sudoku/SudokuWeb/SudokuWeb.csproj",
+        "projectUniqueName": "/home/anton/sudoku/sudoku/SudokuMVC/SudokuMVC.csproj",
+        "projectName": "SudokuMVC",
+        "projectPath": "/home/anton/sudoku/sudoku/SudokuMVC/SudokuMVC.csproj",
         "packagesPath": "/home/anton/.nuget/packages/",
-        "outputPath": "/home/anton/sudoku/sudoku/SudokuWeb/obj/",
+        "outputPath": "/home/anton/sudoku/sudoku/SudokuMVC/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/home/anton/.nuget/NuGet/NuGet.Config"
