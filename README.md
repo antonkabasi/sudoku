@@ -2,9 +2,9 @@
 
 ## Overview
 
-This repository contains a **Sudoku Generator & Solver**, originally written in **C# using Windows Forms** as a part of the **Object-Oriented Programming course** at the **Faculty of Science, University of Split** in 2015.
+This repository contains a **Sudoku Generator & Solver**, originally written in **C# using Windows Forms** in Croatian as a part of the **Object-Oriented Programming course** at the **Faculty of Science, University of Split** in 2015.
 
-The original version *used to* work on my PC (a meme), but now, with C# being **open-source and cross-platform**, I am **rewriting it using ASP.NET Core, Entity Framework Core**, and adding **CRUD functionality** to build a fully functional web application.
+The original version *used to* work on my PC, but now, with C# being **open-source and cross-platform**, I am **rewriting it using ASP.NET Core, Entity Framework Core**, and adding **CRUD functionality** to build a fully functional web application.
 
 ## New Features in the ASP.NET Core Version
 
