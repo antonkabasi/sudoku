@@ -23,19 +23,27 @@ The original version used to work on my PC, but now it doesn't so with C# being 
 
 ## Installation & Running
 
-### Legacy Windows Forms Version (Legacy)
-
-1. Open `SudokuGenerator.sln` in Visual Studio 2015 (or later).
-2. Restore missing NuGet packages.
-3. Build and run the project.
-
-### New ASP.NET Core MVC Version
-
 1. **Clone the repository:**
 
    git clone https://github.com/antonkabasi/sudoku.git
-   cd sudoku-generator
+   cd sudoku
 
 2. **Restore dependencies:**
 
    dotnet restore
+
+3. **Apply Migrations**
+
+The project uses Entity Framework Core with a SQLite database for testing, database isn't included in the github project.
+Run the following command to create (or update) the database schema:
+
+   dotnet ef database update
+
+4. **Build and Run the Application:**
+
+   dotnet run
+
+5. **Open in your Browser:**
+
+Navigate to the URL shown in the console (typically http://localhost:5000).
+
