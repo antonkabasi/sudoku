@@ -79,7 +79,7 @@ I am rewriting it using ASP.NET Core, Entity Framework Core, and adding CRUD fun
 
       2. **Run the docker container:**
 
-      docker run -d -p 5000:5000 --name sudoku-container sudoku-app
+      docker run -d -p 5000:5000 sudoku-app
 
       3. Open the app in your web browser at: http://localhost:5000/
 
